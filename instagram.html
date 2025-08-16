@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chart</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: transparent;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            overflow-x: hidden;
+        }
+        
+        .chart-container {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.08),
+                0 0 0 1px rgba(255, 255, 255, 0.2);
+            padding: 24px;
+            width: 100%;
+            max-width: 100%;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-sizing: border-box;
+        }
+        
+        .chart-container:hover {
+            transform: translateY(-1px);
+            box-shadow: 
+                0 12px 40px rgba(0, 0, 0, 0.12),
+                0 0 0 1px rgba(255, 255, 255, 0.2);
+        }
+        
+        .chart-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+            background-size: 200% 100%;
+            animation: gradientShift 4s ease-in-out infinite;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .iframe-wrapper {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 
+                0 4px 12px rgba(0, 0, 0, 0.05),
+                0 0 0 1px rgba(0, 0, 0, 0.03);
+            background: white;
+            width: 100%;
+        }
+        
+        .chart-iframe {
+            width: 100%;
+            height: 450px;
+            border: none;
+            display: block;
+            min-width: 100%;
+            transform-origin: top left;
+        }
+        
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+        
+        .loading-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .loading-spinner {
+            width: 32px;
+            height: 32px;
+            border: 2px solid #e5e7eb;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Enhanced Mobile Responsive Design */
+        @media (max-width: 768px) {
+            .chart-container {
+                padding: 16px;
+                border-radius: 12px;
+                margin: 8px;
+            }
+            
+            .iframe-wrapper {
+                border-radius: 8px;
+                overflow-x: auto;
+                overflow-y: hidden;
+            }
+            
+            .chart-iframe {
+                height: 380px;
+                min-width: 600px;
+                width: 600px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .chart-container {
+                padding: 12px;
+                border-radius: 8px;
+                margin: 4px;
+            }
+            
+            .iframe-wrapper {
+                border-radius: 6px;
+                overflow-x: auto;
+                overflow-y: hidden;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .chart-iframe {
+                height: 320px;
+                min-height: 280px;
+                min-width: 500px;
+                width: 500px;
+            }
+            
+            .loading-spinner {
+                width: 28px;
+                height: 28px;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            .chart-container {
+                padding: 8px;
+                margin: 2px;
+            }
+            
+            .chart-iframe {
+                height: 280px;
+                min-height: 250px;
+                min-width: 450px;
+                width: 450px;
+            }
+        }
+        
+        /* Touch-friendly interactions on mobile */
+        @media (hover: none) and (pointer: coarse) {
+            .chart-container:hover {
+                transform: none;
+                box-shadow: 
+                    0 8px 32px rgba(0, 0, 0, 0.08),
+                    0 0 0 1px rgba(255, 255, 255, 0.2);
+            }
+            
+            .chart-container:active {
+                transform: scale(0.98);
+            }
+            
+            .iframe-wrapper {
+                scrollbar-width: thin;
+                scrollbar-color: rgba(0,0,0,0.2) transparent;
+            }
+            
+            .iframe-wrapper::-webkit-scrollbar {
+                height: 4px;
+            }
+            
+            .iframe-wrapper::-webkit-scrollbar-track {
+                background: rgba(0,0,0,0.05);
+                border-radius: 2px;
+            }
+            
+            .iframe-wrapper::-webkit-scrollbar-thumb {
+                background: rgba(0,0,0,0.2);
+                border-radius: 2px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chart-container">
+        <div class="iframe-wrapper">
+            <div class="loading-overlay" id="loadingOverlay">
+                <div class="loading-spinner"></div>
+            </div>
+
+            <iframe 
+                class="chart-iframe"
+                src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQzvAITay2iunSFa4mMO0XfnSTrOAj6UOqGz9vT6mUp2AxGSbgEnFWY7Etmlymmgc0pMLfooYpMy1AS/pubchart?oid=1765122095&amp;format=interactive"
+                scrolling="no"
+                onload="hideLoading()">
+            </iframe>
+
+        </div>
+    </div>
+    
+    <script>
+        function hideLoading() {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            setTimeout(() => {
+                loadingOverlay.classList.add('hidden');
+            }, 500);
+        }
+    </script>
+</body>
+</html>
