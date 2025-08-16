@@ -21,12 +21,13 @@
         }
         
         .chart-container {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
+            background: rgba(37, 37, 37, 0.95);
+            backdrop-filter: blur(20px);
             border-radius: 16px;
             box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.08),
-                0 0 0 1px rgba(255, 255, 255, 0.2);
+                0 8px 32px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
             padding: 24px;
             width: 100%;
             max-width: 100%;
@@ -39,8 +40,9 @@
         .chart-container:hover {
             transform: translateY(-1px);
             box-shadow: 
-                0 12px 40px rgba(0, 0, 0, 0.12),
-                0 0 0 1px rgba(255, 255, 255, 0.2);
+                0 12px 40px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.08);
         }
         
         .chart-container::before {
@@ -50,7 +52,7 @@
             left: 0;
             right: 0;
             height: 2px;
-            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
             background-size: 200% 100%;
             animation: gradientShift 4s ease-in-out infinite;
         }
@@ -65,9 +67,9 @@
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 
-                0 4px 12px rgba(0, 0, 0, 0.05),
-                0 0 0 1px rgba(0, 0, 0, 0.03);
-            background: white;
+                0 4px 12px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.06);
+            background: #2a2a2a;
             width: 100%;
         }
         
@@ -76,8 +78,8 @@
             height: 450px;
             border: none;
             display: block;
-            min-width: 100%;
-            transform-origin: top left;
+            border-radius: 12px;
+            filter: brightness(0.9) contrast(1.1);
         }
         
         .loading-overlay {
@@ -86,7 +88,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(42, 42, 42, 0.95);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -103,7 +105,7 @@
         .loading-spinner {
             width: 32px;
             height: 32px;
-            border: 2px solid #e5e7eb;
+            border: 2px solid rgba(255, 255, 255, 0.1);
             border-top: 2px solid #667eea;
             border-radius: 50%;
             animation: spin 1s linear infinite;
@@ -124,14 +126,13 @@
             
             .iframe-wrapper {
                 border-radius: 8px;
-                overflow-x: auto;
-                overflow-y: hidden;
+                overflow: hidden;
             }
             
             .chart-iframe {
-                height: 380px;
-                min-width: 600px;
-                width: 600px;
+                height: 300px;
+                width: 100%;
+                min-width: 100%;
             }
         }
         
@@ -144,16 +145,13 @@
             
             .iframe-wrapper {
                 border-radius: 6px;
-                overflow-x: auto;
-                overflow-y: hidden;
-                -webkit-overflow-scrolling: touch;
+                overflow: hidden;
             }
             
             .chart-iframe {
-                height: 320px;
-                min-height: 280px;
-                min-width: 500px;
-                width: 500px;
+                height: 250px;
+                width: 100%;
+                min-width: 100%;
             }
             
             .loading-spinner {
@@ -169,10 +167,9 @@
             }
             
             .chart-iframe {
-                height: 280px;
-                min-height: 250px;
-                min-width: 450px;
-                width: 450px;
+                height: 220px;
+                width: 100%;
+                min-width: 100%;
             }
         }
         
@@ -181,32 +178,33 @@
             .chart-container:hover {
                 transform: none;
                 box-shadow: 
-                    0 8px 32px rgba(0, 0, 0, 0.08),
-                    0 0 0 1px rgba(255, 255, 255, 0.2);
+                    0 8px 32px rgba(0, 0, 0, 0.4),
+                    0 0 0 1px rgba(255, 255, 255, 0.08),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.05);
             }
             
             .chart-container:active {
                 transform: scale(0.98);
             }
-            
-            .iframe-wrapper {
-                scrollbar-width: thin;
-                scrollbar-color: rgba(0,0,0,0.2) transparent;
-            }
-            
-            .iframe-wrapper::-webkit-scrollbar {
-                height: 4px;
-            }
-            
-            .iframe-wrapper::-webkit-scrollbar-track {
-                background: rgba(0,0,0,0.05);
-                border-radius: 2px;
-            }
-            
-            .iframe-wrapper::-webkit-scrollbar-thumb {
-                background: rgba(0,0,0,0.2);
-                border-radius: 2px;
-            }
+        }
+        
+        /* Dark theme glow effect */
+        .chart-container::after {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            right: -1px;
+            bottom: -1px;
+            background: linear-gradient(45deg, transparent, rgba(102, 126, 234, 0.1), transparent, rgba(245, 87, 108, 0.1), transparent);
+            border-radius: 17px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .chart-container:hover::after {
+            opacity: 1;
         }
     </style>
 </head>
@@ -216,14 +214,12 @@
             <div class="loading-overlay" id="loadingOverlay">
                 <div class="loading-spinner"></div>
             </div>
-
             <iframe 
                 class="chart-iframe"
-                src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQzvAITay2iunSFa4mMO0XfnSTrOAj6UOqGz9vT6mUp2AxGSbgEnFWY7Etmlymmgc0pMLfooYpMy1AS/pubchart?oid=1765122095&amp;format=interactive"
+                src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQzvAITay2iunSFa4mMO0XfnSTrOAj6UOqGz9vT6mUp2AxGSbgEnFWY7Etmlymmgc0pMLfooYpMy1AS/pubchart?oid=1765122095&format=interactive"
                 scrolling="no"
                 onload="hideLoading()">
             </iframe>
-
         </div>
     </div>
     
